@@ -1,0 +1,15 @@
+# Frontend
+frontend/node_modules/
+frontend/build/
+frontend/.env
+
+# Backend (Spring Boot)
+backend/target/
+backend/.settings/
+backend/.classpath
+backend/.project
+backend/bin/
+
+# OS
+.DS_Store
+Thumbs.db
