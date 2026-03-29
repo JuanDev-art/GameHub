@@ -7,7 +7,7 @@ function App() {
   return (
   <BrowserRouter>
     <header style={{ padding: '20px', borderBottom: '1px solid #eee', fontFamily: 'VT323' }}>
-      <h1>🕹️ GameHub Classic</h1>
+      <h1>🕹️ GameHub 🎮</h1>
     </header>
     <Routes>
       <Route path="/" element={<Home />} />

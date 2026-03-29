@@ -6,6 +6,7 @@ function FruitBasket({ gameId }) {
     const scoreRef = useRef(0);
     const livesRef = useRef(3); 
     const playerXRef = useRef(250);
+    const shakeRef = useRef(0);
     
     // Estados para la interfaz
     const [startTime] = useState(Date.now());
@@ -88,8 +89,8 @@ function FruitBasket({ gameId }) {
         // --- VARIABLES DE FÍSICAS ---
         const objWidth = 50;
         const objHeight = 50;
-        const playerWidth = 100;
-        const playerHeight = 60;
+        const playerWidth = 130;
+        const playerHeight = 80;
         
         let y = -objHeight;
         let x = Math.random() * (canvas.width - objWidth);
@@ -120,37 +121,57 @@ function FruitBasket({ gameId }) {
             // 1. Limpiar pantalla
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // 2. DIBUJAR FONDO (Siempre lo primero)
+            //Guardo el estado original de la pantall
+            ctx.save();
+
+            //Animación de sacudida al perder una vida
+            if (shakeRef.current > 0) {
+                ctx.translate((Math.random() - 0.5) * shakeRef.current, (Math.random() - 0.5) * shakeRef.current);
+                shakeRef.current *= 0.9; 
+            }
+
+            // 2. Fondo
             if (bgLoaded) {
                 ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
             }
 
-            // 3. DEFINIR FUNCIÓN DRAWTEXT (Debe estar declarada antes de usarse)
-            const drawText = (text, xPos, yPos, scale = 1, flash = 0) => {
+            // 3. Función drawtext
+            const drawText = (text, xPos, yPos, scale = 1, flash = 0, defaultColor = "white", align = "left") => {
                 ctx.save();
+                ctx.textAlign = align;
                 ctx.translate(xPos, yPos); 
                 ctx.scale(scale, scale);
-                ctx.font = "bold 24px VT323, Arial";
+                ctx.font = "bold 40px VT323, Arial";
                 ctx.strokeStyle = "black";
-                ctx.lineWidth = 4;
-                const color = flash > 0 ? `rgb(255, 255, ${200 + (55 * (1 - flash))})` : "white";
-                if (flash > 0) {
-                    ctx.shadowColor = "rgba(255, 215, 0, " + flash + ")";
-                    ctx.shadowBlur = 15 * flash;
+                ctx.lineWidth = 6;
+
+                //Brillo
+                let color;
+                if (flash > 0.1) {
+                    color = `rgb(255, 255, ${200 + (55 * (1 - flash))})`;
+                } else {
+                    color = defaultColor; //Usamos el color base si no hay flash
                 }
+
+                if (flash > 0.1) {
+                    ctx.shadowColor = "rgba(255, 215, 0, " + (flash * 0.8) + ")";
+                    ctx.shadowBlur = 20 * flash;
+                }
+
                 ctx.strokeText(text, 0, 0);
                 ctx.fillStyle = color;
                 ctx.fillText(text, 0, 0);
                 ctx.restore(); 
             };
 
-            // 4. MOVIMIENTO Y FÍSICAS
+
+            // 4. Movimiento y físicas
             const speed = 5;
             if (keys.ArrowLeft) playerXRef.current -= speed;
             if (keys.ArrowRight) playerXRef.current += speed;
             playerXRef.current = Math.max(0, Math.min(playerXRef.current, canvas.width - playerWidth));
 
-            // 5. DIBUJAR FRUTAS Y CESTA
+            // 5. Dibujar frutas y cesta
             if (objType === "good") {
                 if (currentGoodFruitImage) {
                     ctx.drawImage(currentGoodFruitImage, x, y, objWidth, objHeight);
@@ -167,15 +188,27 @@ function FruitBasket({ gameId }) {
             // 6. DIBUJAR UI Y ANIMACIONES (Siempre al final para que queden por encima)
             scoreScale += (1 - scoreScale) * 0.15;
             scoreFlash *= 0.92;
-            drawText("Score: " + scoreRef.current, 20, 40, scoreScale, scoreFlash);
-            drawText("Lives: " + livesRef.current, canvas.width - 130, 40, 1, 0);
+            drawText("Score: " + scoreRef.current, 30, 50, scoreScale, scoreFlash, "#FFD700");
+            
+            const heartsX = canvas.width - 30;
+            const heartEmoji = "❤️";
+
+            for(let i = 0; i < livesRef.current; i++) {
+
+                drawText(heartEmoji, heartsX - (i * 45), 50, 1, 0, "red", "right");
+
+            }
 
             // 7. LÓGICA DE GRAVEDAD Y COLISIONES
             y += 1.5 + (scoreRef.current * 0.02);
 
             // Suelo
             if (y > canvas.height) {
-                if (objType === "good") livesRef.current--;
+                if (objType === "good") {
+                    livesRef.current--;
+                    shakeRef.current = 15;
+                }
+                
                 if (livesRef.current <= 0) { 
                     saveScore(); 
                     setGameState('GAMEOVER'); 
@@ -197,7 +230,9 @@ function FruitBasket({ gameId }) {
                     scoreScale = 1.5;
                     scoreFlash = 1;
                 } else {
-                    livesRef.current--;
+                    livesRef.current--;      // <--- Aquí
+                    shakeRef.current = 20;
+
                     if (livesRef.current <= 0) { 
                         saveScore(); 
                         setGameState('GAMEOVER'); // ¡Corregido aquí también!
@@ -207,8 +242,12 @@ function FruitBasket({ gameId }) {
                 resetObject();
             }
 
+            ctx.restore();
+
             // Siguiente frame
             if (gameState === "PLAYING") { // Ya no necesitamos && !isGameOver
+
+                
                 animationFrameId = requestAnimationFrame(draw);
             }
         }
@@ -252,12 +291,12 @@ function FruitBasket({ gameId }) {
             <li>🍌 Plátano: +2 pts</li>
             <li>🍓Fresa: +2 pts</li>
             <li>🍍Piña: +5 pts</li>
-            <li>🚫 <strong>¡Cuidado!</strong> No cojas manzanas mordidas</li>
+            <li>🐛 <strong>¡Cuidado!</strong> No cojas los gusanos</li>
           </ul>
         </div>
 
         <button className="start-button" onClick={() => setGameState('PLAYING')}>
-          PULSA PARA EMPEZAR
+          ¡PULSA PARA EMPEZAR!
         </button>
       </div>
     )}
