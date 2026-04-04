@@ -34,12 +34,12 @@ function FruitBasket({ gameId }) {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log("✅ Partida guardada con ID:", result.id);
+                console.log("Partida guardada con ID:", result.id);
             } else {
-                console.error("❌ Error en la respuesta del servidor");
+                console.error("Error en la respuesta del servidor");
             }
         } catch (error) {
-            console.error("❌ Error de red:", error);
+            console.error("Error de red:", error);
         }
     };
 
@@ -56,27 +56,27 @@ function FruitBasket({ gameId }) {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
 
-        // --- CARGA DE RECURSOS ---
+        //Carga de los recursos
         const basketImg = new Image();
-        basketImg.src = "/cesta.png";
+        basketImg.src = "/assets/cesta.png";
         let basketLoaded = false;
         basketImg.onload = () => { basketLoaded = true; };
 
         const bgImg = new Image();
-        bgImg.src = "/bosque.jpg"; 
+        bgImg.src = "/assets/bosque.jpg"; 
         let bgLoaded = false;
         bgImg.onload = () => { bgLoaded = true; };
 
         const badImg = new Image();
-        badImg.src = "/manzanaPodrida.png";
+        badImg.src = "/assets/manzanaPodrida.png";
         let badLoaded = false;
         badImg.onload = () => { badLoaded = true; };
 
         const fruitDefinitions = [
-            { name: "Manzana", src: "/manzana.png", points: 1 },
-            { name: "Platano", src: "/platano.png", points: 1 },
-            { name: "Fresa",   src: "/fresa.png",   points: 2 },
-            { name: "Pina",    src: "/pina.png",    points: 5 }
+            { name: "Manzana", src: "/assets/manzana.png", points: 1 },
+            { name: "Platano", src: "/assets/platano.png", points: 1 },
+            { name: "Fresa",   src: "/assets/fresa.png",   points: 2 },
+            { name: "Pina",    src: "/assets/pina.png",    points: 5 }
         ];
 
         const goodFruitImages = fruitDefinitions.map(fruitDef => {
@@ -86,7 +86,7 @@ function FruitBasket({ gameId }) {
             return img;
         });
 
-        // --- VARIABLES DE FÍSICAS ---
+        //Variables de físicas
         const objWidth = 50;
         const objHeight = 50;
         const playerWidth = 130;

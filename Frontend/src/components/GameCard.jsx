@@ -8,7 +8,7 @@ function GameCard({ game }) {
                 
                 {/* 2. Añadimos la imagen de portada según el juego */}
                 <img 
-                    src={game.id === 1 ? "/fruitbasket_card.png" : "/crocodile_card.png"} 
+                    src={game.id === 1 ? "/assets/fruitbasket_card.png" : "/assets/crocodile_card.png"} 
                     alt={game.name} 
                     className="game-card-img" 
                 />
