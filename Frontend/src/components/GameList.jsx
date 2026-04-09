@@ -22,7 +22,7 @@ function GameList() {
         className="game-title" 
         style={{ textAlign: "center", marginTop: "30px", fontSize: "3rem" }}
       >
-        Selecciona tu Aventura
+        Selecciona tu juego
       </h2>
 
       {/* Contenedor Flexbox para las tarjetas */}
