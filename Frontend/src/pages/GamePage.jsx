@@ -17,7 +17,7 @@ function GamePage() {
 
     return (
         <div style={{ textAlign: "center" }}>
-            <h1>{game.name}</h1>
+            <h1 className="game-title-section">{game.name}</h1>
             <p>{game.description}</p>
             <p><strong>Dificultad:</strong> {game.difficulty}</p>
 

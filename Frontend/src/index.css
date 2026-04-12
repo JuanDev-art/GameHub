@@ -1,13 +1,10 @@
-/* ===================== */
-/* VARIABLES GLOBALES    */
-/* ===================== */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
+  --text: #cbd5e1;
+  --text-h: #ffffff;
+  --bg: #0f172a;
+  --border: #1e293b;
   --code-bg: #f4f3ec;
-  --accent: #aa3bff;
+  --accent: #2ecc71;
   --accent-bg: rgba(170, 59, 255, 0.1);
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
@@ -26,7 +23,6 @@
 
   color-scheme: light dark;
   color: var(--text);
-  background: var(--bg);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -34,18 +30,12 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===================== */
-/* RESPONSIVE GLOBAL     */
-/* ===================== */
 @media (max-width: 1024px) {
   :root {
     font-size: 16px;
   }
 }
 
-/* ===================== */
-/* DARK MODE             */
-/* ===================== */
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
@@ -67,22 +57,17 @@
   }
 }
 
-/* ===================== */
-/* RESET BÁSICO          */
-/* ===================== */
 body {
   margin: 0;
+  min-height: 100vh;
+  background-size: 30px 30px;
 }
 
-/* MUY IMPORTANTE para evitar imágenes gigantes */
 img {
   max-width: 100%;
   display: block;
 }
 
-/* ===================== */
-/* LAYOUT ROOT           */
-/* ===================== */
 #root {
   width: 100%;
   margin: 0;
@@ -93,9 +78,6 @@ img {
   box-sizing: border-box;
 }
 
-/* ===================== */
-/* TIPOGRAFÍA            */
-/* ===================== */
 h1,
 h2 {
   font-family: var(--heading);
@@ -131,9 +113,6 @@ p {
   margin: 0;
 }
 
-/* ===================== */
-/* CÓDIGO Y ELEMENTOS    */
-/* ===================== */
 code,
 .counter {
   font-family: var(--mono);

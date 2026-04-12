@@ -51,7 +51,7 @@ function FruitBasket({ gameId }) {
     };
 
     useEffect(() => {
-        if (gameState !== "PLAYING") return; // Si el juego terminó, o si estamos en la pantalla de inicio, no hacemos nada.
+        if (gameState !== "PLAYING") return; 
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -115,13 +115,11 @@ function FruitBasket({ gameId }) {
                 }
             }
 
-        
-        //Bucle principal draw();
         function draw() {
-            // 1. Limpiar pantalla
+            //Limpiar canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            //Guardo el estado original de la pantall
+            //Guardo el estado original de la pantalla
             ctx.save();
 
             //Animación de sacudida al perder una vida
@@ -130,12 +128,11 @@ function FruitBasket({ gameId }) {
                 shakeRef.current *= 0.9; 
             }
 
-            // 2. Fondo
+            //Fondo
             if (bgLoaded) {
                 ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
             }
 
-            // 3. Función drawtext
             const drawText = (text, xPos, yPos, scale = 1, flash = 0, defaultColor = "white", align = "left") => {
                 ctx.save();
                 ctx.textAlign = align;
@@ -150,7 +147,7 @@ function FruitBasket({ gameId }) {
                 if (flash > 0.1) {
                     color = `rgb(255, 255, ${200 + (55 * (1 - flash))})`;
                 } else {
-                    color = defaultColor; //Usamos el color base si no hay flash
+                    color = defaultColor; 
                 }
 
                 if (flash > 0.1) {
@@ -165,13 +162,13 @@ function FruitBasket({ gameId }) {
             };
 
 
-            // 4. Movimiento y físicas
+            //Movimiento y física
             const speed = 5;
             if (keys.ArrowLeft) playerXRef.current -= speed;
             if (keys.ArrowRight) playerXRef.current += speed;
             playerXRef.current = Math.max(0, Math.min(playerXRef.current, canvas.width - playerWidth));
 
-            // 5. Dibujar frutas y cesta
+            //Frutas y cesta
             if (objType === "good") {
                 if (currentGoodFruitImage) {
                     ctx.drawImage(currentGoodFruitImage, x, y, objWidth, objHeight);
@@ -185,7 +182,7 @@ function FruitBasket({ gameId }) {
                 ctx.drawImage(basketImg, playerXRef.current, playerY, playerWidth, playerHeight);
             }
 
-            // 6. DIBUJAR UI Y ANIMACIONES (Siempre al final para que queden por encima)
+            //Ui y animaciones
             scoreScale += (1 - scoreScale) * 0.15;
             scoreFlash *= 0.92;
             drawText("Score: " + scoreRef.current, 30, 50, scoreScale, scoreFlash, "#FFD700");
@@ -199,7 +196,7 @@ function FruitBasket({ gameId }) {
 
             }
 
-            // 7. LÓGICA DE GRAVEDAD Y COLISIONES
+            //Gravedad y colisiones
             y += 1.5 + (scoreRef.current * 0.02);
 
             // Suelo
@@ -244,8 +241,7 @@ function FruitBasket({ gameId }) {
 
             ctx.restore();
 
-            // Siguiente frame
-            if (gameState === "PLAYING") { // Ya no necesitamos && !isGameOver
+            if (gameState === "PLAYING") { 
 
                 
                 animationFrameId = requestAnimationFrame(draw);
@@ -281,7 +277,7 @@ function FruitBasket({ gameId }) {
     {/* Pantalla de Inicio / Instrucciones */}
     {gameState === 'START' && (
       <div className="game-overlay">
-        <h1>FRUIT BASKET</h1>
+        <h1 className="game-title-section">FRUIT BASKET</h1>
         
         <div className="instructions">
           <p>⬅️ ➡️ Usa las flechas para moverte</p>

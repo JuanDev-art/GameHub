@@ -6,9 +6,11 @@ import "./App.css";
 function App() {
   return (
   <BrowserRouter>
-    <header style={{ padding: '20px', borderBottom: '1px solid #eee', fontFamily: 'VT323' }}>
-      <h1> GameHub </h1>
-      <h2>Plataforma de videojuegos 2D</h2>
+    <header style={{ padding: '20px', borderBottom: '1px solid #eee', textAlign: 'center' }}>
+      <h1 className="game-title" style={{ fontSize: '3rem', margin: 0 }}>GameHub</h1>
+        <p style={{ fontFamily: 'VT323', fontSize: '1.2rem', color: '#666' }}>
+          Plataforma de videojuegos 2D
+        </p>
     </header>
     <Routes>
       <Route path="/" element={<Home />} />
