@@ -39,7 +39,7 @@ Backend: Java 17+, Spring Boot, Maven
 Base de datos: MySql
 Herramientas: Postman,Git, Github
 
-Instalación y Despliegue
+INSTALACIÓN Y DESPLIEGUE
 
 Requisitos Previos
 
@@ -47,7 +47,7 @@ Java JDK 17 o superior.
 Node.js (versión 18 o superior).
 MySQL Server.
 
-Pasos
+PASOS
 
 Clonar el repositorio:
 
@@ -64,7 +64,7 @@ cd frontend
 npm install
 npm run dev
 
-Estado del Proyecto
+ESTADO DEL PROYECTO
 
 Actualmente en desarrollo.
 
