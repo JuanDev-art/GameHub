@@ -12,14 +12,14 @@ function FruitBasket({ gameId }) {
     const [startTime] = useState(Date.now());
     const [gameState, setGameState] = useState('START');
 
-    // Función para enviar los datos a tu Backend en Spring Boot
+    // Función para enviar los datos al Backend 
     const saveScore = async () => {
         const duration = Math.floor((Date.now() - startTime) / 1000);
 
         const matchData = {
             score: scoreRef.current,
             durationSeconds: duration,
-            userId: 1, // ID temporal hasta implementar el Login
+            userId: 1, // ID temporal 
             gameId: parseInt(gameId)
         };
 

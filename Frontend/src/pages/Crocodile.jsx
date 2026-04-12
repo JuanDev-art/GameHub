@@ -6,12 +6,14 @@ const groundY = 380;
 const obstacleSpeed = 4;
 const cocoX = 200; 
 
-function Crocodile() {
+function Crocodile({ gameId }) {
     const [gameState, setGameState] = useState('START');
+    const [startTime, setStartTime] = useState(Date.now())
     const canvasRef = useRef(null);
     const scoreRef = useRef(0);
     const cocoYRef = useRef(groundY);
     const cocoVelocityRef = useRef(0);
+    const jumpCountRef = useRef(0);
     const isDyingRef = useRef(false);
     const frameCountRef = useRef(0);
     const bgImgRef = useRef(null);
@@ -28,14 +30,50 @@ function Crocodile() {
     const rockImgRef = useRef(null);
     const birdImgsRef = useRef([]);
 
+    // Función para enviar los datos al Backend 
+    const saveScore = async () => {
+        const duration = Math.floor((Date.now() - startTime) / 1000);
+
+        const  matchData = {
+            score: scoreRef.current,
+            durationSeconds: duration,
+            userId: 1, //Temporal hasta que implemente el login
+            gameId: parseInt(gameId)
+        };
+
+        console.log("Enviando partida de Crocodile a la DB...", matchData);
+
+        try {
+            const response = await fetch("http://localhost:8080/api/matches", {
+
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(matchData),
+
+            });
+
+            if (response.ok) {
+
+                const result = await response.json();
+                console.log("Partida guardada: ", result.id);
+            } else {
+                console.log("Error al guardar la partida");
+            }
+        } catch {
+            console.log("Error de red", error);
+        }
+    };
+
     const startGame = () => {
         isDyingRef.current = false;
         cocoYRef.current = groundY;
         cocoVelocityRef.current = 0;
+        jumpCountRef.current = 0;
         obstaclesRef.current = [];
         nextObstacleTimerRef.current = 0;
         scoreRef.current = 0;
-        frameCountRef.current = 0; // Resetear contador de frames
+        frameCountRef.current = 0;
+        setStartTime(Date.now());
         setGameState('PLAYING');
     };
 
@@ -94,8 +132,10 @@ function Crocodile() {
         const handleKeyDown = (e) => {
             if (e.key === " " || e.key === "ArrowUp") {
                 e.preventDefault();
-                if (cocoYRef.current >= groundY) {
+
+                if (jumpCountRef.current < 2) {
                     cocoVelocityRef.current = jumpForce;
+                    jumpCountRef.current++;
                 }
             }
         };
@@ -120,9 +160,11 @@ function Crocodile() {
         
             cocoVelocityRef.current += gravity;
             cocoYRef.current += cocoVelocityRef.current;
+
             if (cocoYRef.current > groundY) {
-        cocoYRef.current = groundY;
-        cocoVelocityRef.current = 0;
+                cocoYRef.current = groundY;
+                cocoVelocityRef.current = 0;
+                jumpCountRef.current = 0;
             }
         
             //Gestión de obstáculos
@@ -205,6 +247,7 @@ function Crocodile() {
             if (currentSprites && currentSprites.length > 0) {
         frameIndex = Math.floor(frameCountRef.current / 6) % currentSprites.length;
         if (isDyingRef.current && frameIndex === currentSprites.length - 1) {
+            saveScore();
             setGameState('GAMEOVER');
             return; 
         }
