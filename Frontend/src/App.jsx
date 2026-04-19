@@ -2,19 +2,25 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import GamePage from "./pages/GamePage";
 import "./App.css"; 
+import Login from "./components/Login/Login";
+import Navbar from './components/Menu/Navbar';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-  <BrowserRouter>
-    <header className="main-header">
-        <h1 className="game-title">GameHub</h1>
-        <p className="game-subtitle">Plataforma de videojuegos 2D</p>
-   </header>
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/game/:id" element={<GamePage />} />
-    </Routes>
-  </BrowserRouter>
+    <BrowserRouter>
+     
+      <Navbar /> 
+
+      <Routes>
+
+        <Route path="/login" element={<Login />} />
+
+        <Route path="/" element={ <ProtectedRoute> <Home /> </ProtectedRoute>} />
+        <Route path="/game/:id" element={<ProtectedRoute> <GamePage /> </ProtectedRoute>} />
+        
+      </Routes>
+    </BrowserRouter>
   );
 }
 
