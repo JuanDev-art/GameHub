@@ -1,0 +1,135 @@
+.landing-wrapper {
+    height: 100vh;
+    width: 100%;
+    background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    color: white;
+    font-family: 'VT323', monospace;
+}
+
+.hero-logo {
+    font-size: 8rem;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 10px;
+    color: #fff;
+    text-shadow: 
+        0 0 10px #2ecc71,
+        0 0 20px #2ecc71,
+        0 0 40px #2ecc71;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+.hero-subtitle {
+    font-size: 1.5rem;
+    letter-spacing: 5px;
+    color: #00f2ff;
+    margin-top: 20px;
+    opacity: 0.8;
+}
+
+
+.press-start-btn {
+    margin-top: 50px;
+    background: transparent;
+    border: 3px solid #2ecc71;
+    color: #2ecc71;
+    padding: 15px 40px;
+    font-size: 2rem;
+    font-family: 'VT323', monospace;
+    cursor: pointer;
+    transition: all 0.3s;
+    position: relative;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+}
+
+.press-start-btn:hover {
+    background: #2ecc71;
+    color: #000;
+    box-shadow: 0 0 30px #2ecc71;
+    transform: scale(1.1);
+}
+
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.05); opacity: 0.8; }
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.scroll-hint {
+    margin-top: 20px;
+    font-size: 1rem;
+    color: #57606f;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+.landing-content {
+    position: relative;
+    z-index: 10; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stars {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-image: 
+        radial-gradient(1px 1px at 25px 5px, white, transparent),
+        radial-gradient(1px 1px at 50px 25px, white, transparent),
+        radial-gradient(1px 1px at 125px 20px, white, transparent),
+        radial-gradient(2px 2px at 50px 75px, white, transparent),
+        radial-gradient(2px 2px at 15px 125px, white, transparent),
+        radial-gradient(1px 1px at 110px 140px, white, transparent);
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: starsMove 50s linear infinite;
+    opacity: 0.5;
+}
+
+
+.twinkling {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    background-image: 
+        radial-gradient(2px 2px at 75px 10px, #00f2ff, transparent), 
+        radial-gradient(1px 1px at 150px 50px, white, transparent),
+        radial-gradient(2px 2px at 25px 175px, #2ecc71, transparent), 
+        radial-gradient(1px 1px at 90px 120px, white, transparent);
+    background-repeat: repeat;
+    background-size: 300px 300px;
+    animation: starsMove 100s linear infinite, twinkle 3s ease-in-out infinite;
+}
+
+
+@keyframes starsMove {
+    from { background-position: 0 0; }
+    to { background-position: -1000px 1000px; }
+}
+
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.2; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.2); }
+}

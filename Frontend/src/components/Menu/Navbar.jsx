@@ -22,20 +22,16 @@ function Navbar() {
             </div>
             
             <div className="navbar-user-zone">
-                {username ? (
+                {username && (
                     <div className="user-info">
                         <span className="player-badge">PRO PLAYER</span>
                         <span className="username">{username}</span>
-                        <button onClick={handleLogout} className="exit-button">
-                            <i className="exit-icon">⏻</i> Exit
-                        </button>
-                    </div>
-                ) : (
-                    <button onClick={() => navigate('/login')} className="login-btn">
-                        Login
+                    <button onClick={handleLogout} className="exit-button">
+                         <i className="exit-icon">⏻</i> Exit
                     </button>
-                )}
-            </div>
+        </div>
+    )}
+</div>
         </nav>
     );
 }

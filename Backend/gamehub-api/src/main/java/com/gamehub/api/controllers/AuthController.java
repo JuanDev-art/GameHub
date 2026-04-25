@@ -55,4 +55,27 @@ public class AuthController {
 		
 		return ResponseEntity.ok(response);
 	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<?> register(@RequestBody User user) {
+		
+		//Validamos si el email existe
+		if (userRepository.findByEmail(user.getEmail()).isPresent()) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: El email ya está registrado");
+			
+		}
+		//Ciframos contraseña
+		user.setPassword(passwordEncoder.encode(user.getPassword()));
+		
+		if (user.getRole() == null || user.getRole().isEmpty()) {
+			user.setRole("USER");
+		}
+		
+		//Guardamos en la base de datos
+		userRepository.save(user);
+		
+		return ResponseEntity.ok("Usuario registrado con éxito");
+	}
+	
+	
 }

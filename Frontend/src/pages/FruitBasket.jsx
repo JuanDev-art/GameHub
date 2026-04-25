@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 
+//Quitar barra lateral al empezar el juego. Overflow: hiden / Webkit scrollbar
 function FruitBasket({ gameId }) {
     // Referencias para la lógica del juego (no provocan re-renderizado)
     const canvasRef = useRef(null);
@@ -163,7 +164,7 @@ function FruitBasket({ gameId }) {
 
 
             //Movimiento y física
-            const speed = 5;
+            const speed = 10; //Cesta
             if (keys.ArrowLeft) playerXRef.current -= speed;
             if (keys.ArrowRight) playerXRef.current += speed;
             playerXRef.current = Math.max(0, Math.min(playerXRef.current, canvas.width - playerWidth));
@@ -197,7 +198,7 @@ function FruitBasket({ gameId }) {
             }
 
             //Gravedad y colisiones
-            y += 1.5 + (scoreRef.current * 0.02);
+            y += 3.5 + (scoreRef.current * 0.05);
 
             // Suelo
             if (y > canvas.height) {

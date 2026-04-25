@@ -22,6 +22,7 @@ public class SecurityConfig {
 			.authorizeHttpRequests(auth -> auth
 					.requestMatchers("/api/auth/**").permitAll()
 					.requestMatchers("/api/games/**").permitAll()
+					.requestMatchers("/api/auth/login", "/api/auth/register").permitAll()
 					.anyRequest().authenticated()
 					);
 		return http.build();

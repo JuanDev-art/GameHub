@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-const gravity = 0.5;
-const jumpForce = -13; 
+const gravity = 0.6;
+const jumpForce = -14; 
 const groundY = 380;
-const obstacleSpeed = 4;
+const obstacleSpeed = 6;
 const cocoX = 200; 
 
 function Crocodile({ gameId }) {
@@ -18,7 +18,7 @@ function Crocodile({ gameId }) {
     const frameCountRef = useRef(0);
     const bgImgRef = useRef(null);
     const bgXRef = useRef(0);
-    const bgSpeed = 1.2;
+    const bgSpeed = 2.5;
     const obstaclesRef = useRef([]);
     const nextObstacleTimerRef = useRef(0); 
 
