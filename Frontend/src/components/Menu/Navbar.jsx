@@ -22,6 +22,11 @@ function Navbar() {
             </div>
             
             <div className="navbar-user-zone">
+                
+            <Link to="/ranking" className="navbar-ranking-link">
+                🏆 RANKING
+            </Link>
+
                 {username && (
                     <div className="user-info">
                         <span className="player-badge">PRO PLAYER</span>

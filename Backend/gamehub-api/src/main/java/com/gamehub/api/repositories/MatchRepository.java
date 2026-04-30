@@ -9,6 +9,7 @@ import com.gamehub.api.entities.Match;
 public interface MatchRepository extends JpaRepository<Match, Long>{
 	
 	List<Match> findByUserId(Long userId);
-	List<Match> findByGameId(Long gameId); 
+	List<Match> findByGameId(Long gameId);
+	List<Match> findTop10ByGameIdOrderByScoreDesc(Long gameId);
 
 }

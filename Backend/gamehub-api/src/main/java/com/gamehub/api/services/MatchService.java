@@ -55,6 +55,14 @@ public class MatchService {
 				.toList();
 	}
 	
+	//Obtener ranking top 10
+	public List<MatchResponse> getTopByGame(Long gameId) {
+	    return matchRepository.findTop10ByGameIdOrderByScoreDesc(gameId)
+	            .stream()
+	            .map(this::toMatchResponse)
+	            .toList();
+	}
+	
 	//Guardar partida
 	public Match saveMatch(Match match) {
 		

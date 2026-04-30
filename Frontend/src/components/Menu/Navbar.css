@@ -76,3 +76,19 @@
     color: white;
     box-shadow: 0 0 15px rgba(255, 68, 68, 0.4);
 }
+
+.navbar-ranking-link {
+    color: #FFD700;
+    text-decoration: none;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    letter-spacing: 2px;
+    margin-right: 20px;
+    transition: all 0.3s;
+    text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+
+.navbar-ranking-link:hover {
+    color: #fff;
+    text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}

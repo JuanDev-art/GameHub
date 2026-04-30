@@ -55,5 +55,11 @@ public class MatchController {
 	public MatchResponse createMatch(@RequestBody MatchRequest request) throws Exception {
 		return matchService.createMatch(request);
 	}
+	
+	//Endpoint 5 — Top 10 puntuaciones por juego --> GET /api/matches/top/1
+	@GetMapping("/top/{gameId}")
+	public List<MatchResponse> getTopByGame(@PathVariable Long gameId) {
+	    return matchService.getTopByGame(gameId);
+	}
 
 }

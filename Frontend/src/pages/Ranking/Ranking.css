@@ -1,0 +1,120 @@
+.ranking-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 20px;
+    font-family: 'VT323', monospace;
+}
+
+.ranking-title {
+    text-align: center;
+    color: #FFD700;
+    font-size: 3rem;
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 30px;
+}
+
+.ranking-tabs {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.ranking-tab {
+    background: transparent;
+    border: 2px solid #334155;
+    color: #94a3b8;
+    padding: 10px 25px;
+    font-family: 'VT323', monospace;
+    font-size: 1.3rem;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.ranking-tab:hover {
+    border-color: #2ecc71;
+    color: #2ecc71;
+}
+
+.ranking-tab.active {
+    border-color: #2ecc71;
+    color: #2ecc71;
+    box-shadow: 0 0 15px rgba(46, 204, 113, 0.3);
+}
+
+.ranking-table {
+    background: #1e293b;
+    border-radius: 12px;
+    border: 1px solid #334155;
+    overflow: hidden;
+}
+
+.ranking-row {
+    display: flex;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #334155;
+    font-size: 1.3rem;
+    transition: background 0.2s;
+}
+
+.ranking-row:last-child {
+    border-bottom: none;
+}
+
+.ranking-row:hover {
+    background: #263548;
+}
+
+.ranking-row.top-three {
+    background: rgba(255, 215, 0, 0.05);
+}
+
+.ranking-pos {
+    width: 50px;
+    font-size: 1.5rem;
+}
+
+.ranking-username {
+    flex: 1;
+    color: white;
+}
+
+.ranking-score {
+    color: #2ecc71;
+    font-size: 1.4rem;
+    margin-right: 20px;
+}
+
+.ranking-duration {
+    color: #94a3b8;
+    font-size: 1.1rem;
+    width: 60px;
+    text-align: right;
+}
+
+.ranking-loading,
+.ranking-empty {
+    text-align: center;
+    color: #94a3b8;
+    padding: 40px;
+    font-size: 1.3rem;
+}
+
+.ranking-back-btn {
+    background: transparent;
+    border: 2px solid #57606f;
+    color: #aaa;
+    padding: 6px 16px;
+    font-family: 'VT323', monospace;
+    font-size: 1.1rem;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+}
+
+.ranking-back-btn:hover {
+    border-color: #2ecc71;
+    color: #2ecc71;
+}

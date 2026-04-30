@@ -7,6 +7,7 @@ import Navbar from './components/Menu/Navbar';
 import ProtectedRoute from './components/ProtectedRoute';
 import Register from './components/Register';
 import LandingPage from "./pages/Landing/LandingPage";
+import Ranking from './pages/Ranking/Ranking';
 
 function AppContent() {
   const location = useLocation();
@@ -23,6 +24,8 @@ function AppContent() {
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/game/:id" element={<ProtectedRoute><GamePage /></ProtectedRoute>} />
+        <Route path="/ranking" element={<ProtectedRoute><Ranking /></ProtectedRoute>} />
+
       </Routes>
     </>
   );
