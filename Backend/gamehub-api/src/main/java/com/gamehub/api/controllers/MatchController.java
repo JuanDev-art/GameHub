@@ -8,13 +8,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gamehub.api.dto.MatchRequest;
 import com.gamehub.api.dto.MatchResponse;
 import com.gamehub.api.services.MatchService;
 
-@CrossOrigin(origins = "http://localhost:5173")
+
+@CrossOrigin(
+		origins = "http://localhost:5173",
+		allowedHeaders = "*",
+		methods = { RequestMethod.GET, RequestMethod.POST })
 @RestController
 @RequestMapping("/api/matches")
 public class MatchController {

@@ -52,6 +52,7 @@ public class AuthController {
 		response.put("token", jwt);
 		response.put("username", user.getUsername());
 		response.put("role", user.getRole());
+		response.put("userId", String.valueOf(user.getId()));
 		
 		return ResponseEntity.ok(response);
 	}
