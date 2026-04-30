@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const gravity = 0.6;
 const jumpForce = -14; 
@@ -7,6 +8,7 @@ const obstacleSpeed = 6;
 const cocoX = 200; 
 
 function Crocodile({ gameId }) {
+    const navigate = useNavigate();
     const [gameState, setGameState] = useState('START');
     const [startTime, setStartTime] = useState(Date.now())
     const canvasRef = useRef(null);
@@ -20,7 +22,8 @@ function Crocodile({ gameId }) {
     const bgXRef = useRef(0);
     const bgSpeed = 2.5;
     const obstaclesRef = useRef([]);
-    const nextObstacleTimerRef = useRef(0); 
+    const nextObstacleTimerRef = useRef(0);
+    const scoreSavedRef = useRef(false); 
 
     // Arrays de imágenes
     const runImgsRef = useRef([]);
@@ -37,7 +40,7 @@ function Crocodile({ gameId }) {
         const  matchData = {
             score: scoreRef.current,
             durationSeconds: duration,
-            userId: 1, //Temporal hasta que implemente el login
+            userId: parseInt(localStorage.getItem('userId')),
             gameId: parseInt(gameId)
         };
 
@@ -47,7 +50,9 @@ function Crocodile({ gameId }) {
             const response = await fetch("http://localhost:8080/api/matches", {
 
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                 },
                 body: JSON.stringify(matchData),
 
             });
@@ -59,13 +64,14 @@ function Crocodile({ gameId }) {
             } else {
                 console.log("Error al guardar la partida");
             }
-        } catch {
+        } catch(error) {
             console.log("Error de red", error);
         }
     };
 
     const startGame = () => {
         isDyingRef.current = false;
+        scoreSavedRef.current = false;
         cocoYRef.current = groundY;
         cocoVelocityRef.current = 0;
         jumpCountRef.current = 0;
@@ -139,6 +145,16 @@ function Crocodile({ gameId }) {
                 }
             }
         };
+
+        const handleTouch = (e) => {
+        e.preventDefault();
+        if (jumpCountRef.current < 2) {
+            cocoVelocityRef.current = jumpForce;
+            jumpCountRef.current++;
+            }
+        };
+
+        canvas.addEventListener("touchstart", handleTouch, { passive: false });
 
         window.addEventListener("keydown", handleKeyDown);
 
@@ -245,22 +261,30 @@ function Crocodile({ gameId }) {
         
             let frameIndex = 0;
             if (currentSprites && currentSprites.length > 0) {
-        frameIndex = Math.floor(frameCountRef.current / 6) % currentSprites.length;
-        if (isDyingRef.current && frameIndex === currentSprites.length - 1) {
-            saveScore();
-            setGameState('GAMEOVER');
-            return; 
-        }
+                frameIndex = Math.floor(frameCountRef.current / 6) % currentSprites.length;
+                if (isDyingRef.current && frameIndex === currentSprites.length - 1) {
+                    if (!scoreSavedRef.current) {   // ← solo entra si no se ha guardado ya
+                        scoreSavedRef.current = true;
+                        saveScore();
+            }
+                        setGameState('GAMEOVER');
+                        return; 
+            }
             }
         
             const currentImg = (currentSprites && currentSprites.length > 0) ? currentSprites[frameIndex] : null;
             if (currentImg && currentImg.complete && currentImg.naturalWidth !== 0) {
         
-        ctx.drawImage(currentImg, cocoX, cocoYRef.current, 90, 90);
+                ctx.drawImage(currentImg, cocoX, cocoYRef.current, 90, 90);
             } else {
-        ctx.fillStyle = "#2ecc71"; 
-        ctx.fillRect(cocoX, cocoYRef.current, 80, 80);
+                ctx.fillStyle = "#2ecc71"; 
+                ctx.fillRect(cocoX, cocoYRef.current, 80, 80);
             }
+
+            // Marcador de puntuación
+            ctx.fillStyle = 'white';
+            ctx.font = 'bold 20px monospace';
+            ctx.fillText(`SCORE: ${scoreRef.current}`, 20, 35);
         
             frameCountRef.current++;
             animationFrameId = requestAnimationFrame(draw);
@@ -271,6 +295,7 @@ function Crocodile({ gameId }) {
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
+            canvas.removeEventListener("touchstart", handleTouch);
             cancelAnimationFrame(animationFrameId);
         };
     }, [gameState]);
@@ -341,13 +366,14 @@ function Crocodile({ gameId }) {
           <button className="start-button" onClick={startGame}>
             REINTENTAR
           </button>
+
           <button 
             className="start-button" 
-            style={{ backgroundColor: '#57606f' }} 
-            onClick={() => window.location.reload()}
-          >
-            SALIR
-          </button>
+            style={{ backgroundColor: '#57606f', marginTop: '10px' }}
+            onClick={() => navigate('/home')}
+        >
+            🏠 VOLVER AL INICIO
+        </button>
         </div>
       </div>
     )}

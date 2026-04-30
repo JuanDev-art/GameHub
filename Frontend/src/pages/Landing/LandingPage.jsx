@@ -22,7 +22,9 @@ const LandingPage = () => {
                 <p className='hero-subtitle'>THE ULTIMATE 2D GAMING PLATFORM</p>
 
                 <div className='action-zone'>
-                    <button className='press-start-btn' onClick={() => navigate('/login')}>
+                    <button className='press-start-btn' 
+                    onClick={() => navigate('/login')}
+                    aria-label="Ir a la página de inicio de sesión" >
                         PRESS START
                     </button>
                     <p className="scroll-hint">INSERT COIN TO PLAY</p>

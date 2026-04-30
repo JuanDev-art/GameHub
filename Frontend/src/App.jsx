@@ -13,13 +13,14 @@ function AppContent() {
 
   return (
     <>
-      {location.pathname !== "/" && <Navbar />}
+      {location.pathname !== "/" && 
+        !location.pathname.startsWith("/game") && 
+        <Navbar />}
 
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {/* Acuérdate de usar /home para evitar el choque que vimos antes */}
         <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
         <Route path="/game/:id" element={<ProtectedRoute><GamePage /></ProtectedRoute>} />
       </Routes>

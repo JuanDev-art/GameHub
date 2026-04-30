@@ -12,7 +12,7 @@
 }
 
 .hero-logo {
-    font-size: 8rem;
+    font-size: clamp(3rem, 12vw, 8rem);
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 10px;
@@ -60,15 +60,10 @@
     50% { transform: scale(1.05); opacity: 0.8; }
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-20px); }
-}
-
 .scroll-hint {
     margin-top: 20px;
     font-size: 1rem;
-    color: #57606f;
+    color: #aaaaaa;
     animation: blink 1s infinite;
 }
 
@@ -132,4 +127,58 @@
 @keyframes twinkle {
     0%, 100% { opacity: 0.2; transform: scale(0.8); }
     50% { opacity: 1; transform: scale(1.2); }
+}
+
+.corner-decoration {
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border-color: #2ecc71;
+    border-style: solid;
+    opacity: 0.6;
+    z-index: 5;
+}
+
+.corner-decoration.top-left {
+    top: 20px;
+    left: 20px;
+    border-width: 3px 0 0 3px; /* solo borde arriba e izquierda */
+}
+
+.corner-decoration.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    border-width: 0 3px 3px 0; /* solo borde abajo y derecha */
+}
+
+/*Accesibilidad*/
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation: none !important;
+        transition: none !important;
+    }
+}
+
+.hero-logo,
+.logo-underline,
+.hero-subtitle,
+.action-zone {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease forwards;
+}
+
+.hero-logo        { animation-delay: 0.2s; }
+.logo-underline   { animation-delay: 0.6s; }
+.hero-subtitle    { animation-delay: 1s;   }
+.action-zone      { animation-delay: 1.4s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

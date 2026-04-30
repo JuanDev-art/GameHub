@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 
 //Quitar barra lateral al empezar el juego. Overflow: hiden / Webkit scrollbar
 function FruitBasket({ gameId }) {
@@ -8,19 +9,38 @@ function FruitBasket({ gameId }) {
     const livesRef = useRef(3); 
     const playerXRef = useRef(250);
     const shakeRef = useRef(0);
+    const scoreSavedRef = useRef(false);
+    const basketImgRef = useRef(null);
+    const bgImgRef = useRef(null);
+    const badImgRef = useRef(null);
+    const goodFruitImagesRef = useRef([]);
+    const animationFrameIdRef = useRef(null);
+    const drawRef = useRef(null);
+    const navigate = useNavigate();
     
     // Estados para la interfaz
-    const [startTime] = useState(Date.now());
+    const startTimeRef = useRef(Date.now());
     const [gameState, setGameState] = useState('START');
+    const isPausedRef = useRef(false);
+    const [isPaused, setIsPaused] = useState(false);
+
+    // Ocultar scrollbar al entrar al juego
+    useEffect(() => {
+        document.body.classList.add('game-active');
+
+            return () => {
+                document.body.classList.remove('game-active');
+            };
+    }, []);
 
     // Función para enviar los datos al Backend 
     const saveScore = async () => {
-        const duration = Math.floor((Date.now() - startTime) / 1000);
+        const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
         const matchData = {
             score: scoreRef.current,
             durationSeconds: duration,
-            userId: 1, // ID temporal 
+            userId: parseInt(localStorage.getItem('userId')), 
             gameId: parseInt(gameId)
         };
 
@@ -29,7 +49,9 @@ function FruitBasket({ gameId }) {
         try {
             const response = await fetch("http://localhost:8080/api/matches", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem('token')}`
+                 },
                 body: JSON.stringify(matchData),
             });
 
@@ -48,44 +70,45 @@ function FruitBasket({ gameId }) {
     const handleRestart = () => {
         scoreRef.current = 0;
         livesRef.current = 3;
+        scoreSavedRef.current = false;
+        startTimeRef.current = Date.now();
         setGameState('START');
     };
 
     useEffect(() => {
-        if (gameState !== "PLAYING") return; 
+    const basketImg = new Image();
+    basketImg.src = "/assets/cesta.png";
+    basketImgRef.current = basketImg;
+
+    const bgImg = new Image();
+    bgImg.src = "/assets/bosque.jpg";
+    bgImgRef.current = bgImg;
+
+    const badImg = new Image();
+    badImg.src = "/assets/manzanaPodrida.png";
+    badImgRef.current = badImg;
+
+    const fruitDefinitions = [
+        { name: "Manzana", src: "/assets/manzana.png",  points: 1 },
+        { name: "Platano", src: "/assets/platano.png",  points: 2 },
+        { name: "Fresa",   src: "/assets/fresa.png",    points: 2 },
+        { name: "Pina",    src: "/assets/pina.png",     points: 5 }
+    ];
+
+    goodFruitImagesRef.current = fruitDefinitions.map(fruitDef => {
+        const img = new Image();
+        img.src = fruitDef.src;
+        img.dataset.points = fruitDef.points;
+        return img;
+    });
+    }, []); 
+
+    useEffect(() => {
+        if (gameState !== "PLAYING") return;
+        if (isPausedRef.current) return; 
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-
-        //Carga de los recursos
-        const basketImg = new Image();
-        basketImg.src = "/assets/cesta.png";
-        let basketLoaded = false;
-        basketImg.onload = () => { basketLoaded = true; };
-
-        const bgImg = new Image();
-        bgImg.src = "/assets/bosque.jpg"; 
-        let bgLoaded = false;
-        bgImg.onload = () => { bgLoaded = true; };
-
-        const badImg = new Image();
-        badImg.src = "/assets/manzanaPodrida.png";
-        let badLoaded = false;
-        badImg.onload = () => { badLoaded = true; };
-
-        const fruitDefinitions = [
-            { name: "Manzana", src: "/assets/manzana.png", points: 1 },
-            { name: "Platano", src: "/assets/platano.png", points: 1 },
-            { name: "Fresa",   src: "/assets/fresa.png",   points: 2 },
-            { name: "Pina",    src: "/assets/pina.png",    points: 5 }
-        ];
-
-        const goodFruitImages = fruitDefinitions.map(fruitDef => {
-            const img = new Image();
-            img.src = fruitDef.src;
-            img.dataset.points = fruitDef.points; 
-            return img;
-        });
 
         //Variables de físicas
         const objWidth = 50;
@@ -96,8 +119,7 @@ function FruitBasket({ gameId }) {
         let y = -objHeight;
         let x = Math.random() * (canvas.width - objWidth);
         let objType = "good";
-        let currentGoodFruitImage = goodFruitImages[0];
-        let animationFrameId;
+        let currentGoodFruitImage = goodFruitImagesRef.current[0];
 
         const keys = { ArrowLeft: false, ArrowRight: false };
 
@@ -111,12 +133,14 @@ function FruitBasket({ gameId }) {
                     objType = "bad";
                 } else {
                     objType = "good";
-                    const randomIndex = Math.floor(Math.random() * goodFruitImages.length);
-                    currentGoodFruitImage = goodFruitImages[randomIndex];
+                    const randomIndex = Math.floor(Math.random() * goodFruitImagesRef.current.length);
+                    currentGoodFruitImage = goodFruitImagesRef.current[randomIndex];
                 }
             }
 
         function draw() {
+            //Pausa del juego
+            if (isPausedRef.current) return;
             //Limpiar canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -130,8 +154,8 @@ function FruitBasket({ gameId }) {
             }
 
             //Fondo
-            if (bgLoaded) {
-                ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
+            if (bgImgRef.current) {
+                ctx.drawImage(bgImgRef.current, 0, 0, canvas.width, canvas.height);
             }
 
             const drawText = (text, xPos, yPos, scale = 1, flash = 0, defaultColor = "white", align = "left") => {
@@ -174,13 +198,13 @@ function FruitBasket({ gameId }) {
                 if (currentGoodFruitImage) {
                     ctx.drawImage(currentGoodFruitImage, x, y, objWidth, objHeight);
                 }
-            } else if (badLoaded) {
-                ctx.drawImage(badImg, x, y, objWidth, objHeight);
+            } else if (badImgRef.current) {
+                ctx.drawImage(badImgRef.current, x, y, objWidth, objHeight);
             }
 
             const playerY = canvas.height - playerHeight;
-            if (basketLoaded) {
-                ctx.drawImage(basketImg, playerXRef.current, playerY, playerWidth, playerHeight);
+            if (basketImgRef.current) {
+                ctx.drawImage(basketImgRef.current, playerXRef.current, playerY, playerWidth, playerHeight);
             }
 
             //Ui y animaciones
@@ -207,11 +231,15 @@ function FruitBasket({ gameId }) {
                     shakeRef.current = 15;
                 }
                 
-                if (livesRef.current <= 0) { 
-                    saveScore(); 
-                    setGameState('GAMEOVER'); 
-                    return; 
+                if (livesRef.current <= 0) {
+
+                if (!scoreSavedRef.current) {
+                    scoreSavedRef.current = true;
+                    saveScore();
                 }
+                setGameState('GAMEOVER');
+                return;
+            }
                 resetObject();
             }
 
@@ -228,14 +256,18 @@ function FruitBasket({ gameId }) {
                     scoreScale = 1.5;
                     scoreFlash = 1;
                 } else {
-                    livesRef.current--;      // <--- Aquí
+                    livesRef.current--;      
                     shakeRef.current = 20;
 
-                    if (livesRef.current <= 0) { 
-                        saveScore(); 
-                        setGameState('GAMEOVER'); // ¡Corregido aquí también!
-                        return; 
+                    if (livesRef.current <= 0) {
+
+                    if (!scoreSavedRef.current) {
+                        scoreSavedRef.current = true;
+                        saveScore();
                     }
+                    setGameState('GAMEOVER');
+                    return;
+                }
                 }
                 resetObject();
             }
@@ -245,14 +277,24 @@ function FruitBasket({ gameId }) {
             if (gameState === "PLAYING") { 
 
                 
-                animationFrameId = requestAnimationFrame(draw);
+                animationFrameIdRef.current = requestAnimationFrame(draw);
             }
         }
+
+        drawRef.current = draw;
 
         // Manejo de teclado
         const handleKeyDown = (e) => {
             if (e.key === "ArrowLeft" || e.key === "ArrowRight") keys[e.key] = true;
-        };
+            if (e.key === "Escape") {
+                isPausedRef.current = !isPausedRef.current;
+                setIsPaused(isPausedRef.current);
+                if (!isPausedRef.current) {
+                    // Reanudamos: volvemos a arrancar el bucle
+                    animationFrameIdRef.current = requestAnimationFrame(draw);
+                }
+            }
+        };     
         const handleKeyUp = (e) => {
             if (e.key === "ArrowLeft" || e.key === "ArrowRight") keys[e.key] = false;
         };
@@ -266,7 +308,7 @@ function FruitBasket({ gameId }) {
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameIdRef.current);
         };
 
     }, [gameState]);
@@ -303,15 +345,59 @@ function FruitBasket({ gameId }) {
 
     {/* Pantalla de Game Over (Opcional) */}
     {gameState === 'GAMEOVER' && (
-       <div className="game-overlay">
-            <h2 style={{ fontSize: "48px", color: "#ff4444" }}>GAME OVER</h2>
-            <p style={{ fontSize: "24px" }}>Puntuación: {scoreRef.current}</p>
+    <div className="game-overlay">
+        <h2 style={{ fontSize: "48px", color: "#ff4444" }}>GAME OVER</h2>
+        <p style={{ fontSize: "24px" }}>Puntuación: {scoreRef.current}</p>
+        <div style={{ display: 'flex', gap: '15px' }}>
             <button className="start-button" onClick={handleRestart}>
-                VOLVER A INTENTAR
+                REINTENTAR
             </button>
+            <button 
+                className="start-button" 
+                style={{ backgroundColor: '#57606f' }} 
+                onClick={() => navigate('/home')}
+            >
+                SALIR
+            </button>
+            </div>
         </div>
-    )}
+        )}
+
+    {/* Menú de pausa */}
+        {isPaused && (
+            <div className="game-overlay">
+                <h2 style={{ fontSize: "48px", color: "#FFD700" }}>⏸ PAUSA</h2>
+                <p style={{ fontSize: "18px", color: "#aaa", marginBottom: "20px" }}>
+                    Puntuación actual: {scoreRef.current}
+                </p>
+                <div style={{ display: 'flex', gap: '15px' }}>
+                    <button 
+                        className="start-button"
+                        onClick={() => {
+                            isPausedRef.current = false;
+                            setIsPaused(false);
+                            // Reanudamos el bucle desde el botón
+                            animationFrameIdRef.current = requestAnimationFrame(drawRef.current);
+                        }}
+                    >
+                        ▶ CONTINUAR
+                    </button>
+                    <button 
+                        className="start-button"
+                        style={{ backgroundColor: '#57606f' }}
+                        onClick={() => navigate('/home')}
+                    >
+                        🏠 SALIR
+                    </button>
+                </div>
+                <p style={{ fontSize: "14px", color: "#666", marginTop: "15px" }}>
+                    Pulsa ESC para continuar
+                </p>
+            </div>
+        )}   
     </div>
+
+       
 );
 }
 

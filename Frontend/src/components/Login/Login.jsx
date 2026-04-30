@@ -1,18 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './Login.css'; //Lo creo después
+import Modal from '../Modal/Modal';
+import './Login.css';
 
 function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [modal, setModal] = useState(null);
     const navigate = useNavigate();
 
     useEffect(() => {
         // Si ya hay un token en el localStorage, lo mandamos al Home
         const token = localStorage.getItem('token');
         if (token) {
-            navigate('/'); 
+            navigate('/home'); 
         }
     }, [navigate]);
 
@@ -33,15 +35,15 @@ function Login() {
             if (response.ok) {
                 const data = await response.json();
                 //Guardamos token para futuras peticiones
+                localStorage.setItem('userId', data.userId);
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('username', data.username);
                 localStorage.setItem('role', data.role);
 
-                alert(`¡Bienvenido de nuevo, ${data.username}!`);
-                navigate('/');
+                setModal({ type: 'success', message: `¡Bienvenido de nuevo, ${data.username}!` });
 
             } else {
-                alert("Email o password incorrectos. ¡Inténtalo de nuevo!");
+                setModal({ type: 'error', message: 'Email o password incorrectos. ¡Inténtalo de nuevo!' });
             }
 
             } catch (error) {
@@ -80,7 +82,18 @@ function Login() {
             <p className='register-link'> ¿No tienes cuenta? <span onClick={() => navigate('/register')}> Regístrate aquí </span></p>
 
         </form>
-
+        
+        {/* Modal */}
+        {modal && (
+            <Modal
+                type={modal.type}
+                message={modal.message}
+                onClose={() => {
+                    if (modal.type === 'success') navigate('/home');
+                    setModal(null);
+                }}
+            />
+        )}
 
 
     </div>

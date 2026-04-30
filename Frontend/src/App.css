@@ -141,7 +141,7 @@ body, html {
 .game-container {
   position: relative;
   width: 800px;
-  margin: 40px auto;
+  margin: 0 auto;
   
   border: 12px solid #2c3e50; 
   border-radius: 20px;
@@ -217,4 +217,13 @@ header {
   color: #94a3b8;
   letter-spacing: 2px;
   margin-top: 10px;
+}
+
+body.game-active {
+    overflow: hidden !important;
+}
+
+body.game-active #root {
+    overflow: hidden !important;
+    height: 100vh;
 }
