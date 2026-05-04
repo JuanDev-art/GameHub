@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 40px;
+    padding: 15px 60px;
     background: rgba(18, 18, 18, 0.95); /* Negro profundo con algo de transparencia */
     border-bottom: 2px solid #00ff88;
     box-shadow: 0 4px 15px rgba(0, 255, 136, 0.2);
@@ -83,7 +83,6 @@
     font-family: 'VT323', monospace;
     font-size: 1.3rem;
     letter-spacing: 2px;
-    margin-right: 20px;
     transition: all 0.3s;
     text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
 }
@@ -91,4 +90,25 @@
 .navbar-ranking-link:hover {
     color: #fff;
     text-shadow: 0 0 15px rgba(255, 215, 0, 0.8);
+}
+
+.navbar-user-zone {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.username {
+    color: #fff;
+    font-weight: 500;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding-bottom: 2px;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+}
+
+.username:hover {
+    color: #2ecc71;
+    border-bottom: 2px solid #2ecc71;
 }

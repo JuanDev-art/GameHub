@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 
-//Quitar barra lateral al empezar el juego. Overflow: hiden / Webkit scrollbar
+
 function FruitBasket({ gameId }) {
     // Referencias para la lógica del juego (no provocan re-renderizado)
     const canvasRef = useRef(null);

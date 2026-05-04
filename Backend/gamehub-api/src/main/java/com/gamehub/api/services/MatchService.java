@@ -106,5 +106,26 @@ public class MatchService {
 		response.setGameName(match.getGame().getName());
 		return response;
 	}
+	
+	public List<MatchResponse> getBestScoresByUser(Long userId) {
+	    List<Game> games = gameRepository.findAll();
+
+	    return games.stream()
+	        .map(game -> matchRepository
+	            .findTopByUserIdAndGameIdOrderByScoreDesc(userId, game.getId())
+	            .map(match -> {
+	                MatchResponse response = new MatchResponse();
+	                response.setScore(match.getScore());
+	                response.setDurationSeconds(match.getDurationSeconds());
+	                response.setDate(match.getDate());
+	                response.setUsername(match.getUser().getUsername());
+	                response.setGameName(match.getGame().getName());
+	                return response;
+	            })
+	            .orElse(null)
+	        )
+	        .filter(response -> response != null)
+	        .toList();
+	}
 
 }

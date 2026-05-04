@@ -15,6 +15,8 @@ function AppContent() {
   return (
     <>
       {location.pathname !== "/" && 
+        location.pathname !== "/login" && 
+        location.pathname !== "/register" && 
         !location.pathname.startsWith("/game") && 
         <Navbar />}
 

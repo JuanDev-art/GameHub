@@ -10,7 +10,7 @@ const cocoX = 200;
 function Crocodile({ gameId }) {
     const navigate = useNavigate();
     const [gameState, setGameState] = useState('START');
-    const [startTime, setStartTime] = useState(Date.now())
+    const startTimeRef = useRef(Date.now());
     const canvasRef = useRef(null);
     const scoreRef = useRef(0);
     const cocoYRef = useRef(groundY);
@@ -24,6 +24,10 @@ function Crocodile({ gameId }) {
     const obstaclesRef = useRef([]);
     const nextObstacleTimerRef = useRef(0);
     const scoreSavedRef = useRef(false); 
+    const animationFrameIdRef = useRef(null);
+    const drawRef = useRef(null);
+    const isPausedRef = useRef(false);
+    const [isPaused, setIsPaused] = useState(false);
 
     // Arrays de imágenes
     const runImgsRef = useRef([]);
@@ -35,7 +39,7 @@ function Crocodile({ gameId }) {
 
     // Función para enviar los datos al Backend 
     const saveScore = async () => {
-        const duration = Math.floor((Date.now() - startTime) / 1000);
+        const duration = Math.floor((Date.now() - startTimeRef.current) / 1000);
 
         const  matchData = {
             score: scoreRef.current,
@@ -72,6 +76,8 @@ function Crocodile({ gameId }) {
     const startGame = () => {
         isDyingRef.current = false;
         scoreSavedRef.current = false;
+        isPausedRef.current = false;
+        setIsPaused(false);
         cocoYRef.current = groundY;
         cocoVelocityRef.current = 0;
         jumpCountRef.current = 0;
@@ -79,9 +85,16 @@ function Crocodile({ gameId }) {
         nextObstacleTimerRef.current = 0;
         scoreRef.current = 0;
         frameCountRef.current = 0;
-        setStartTime(Date.now());
+        startTimeRef.current = Date.now();
         setGameState('PLAYING');
     };
+    //Ocultar scrollbar.
+    useEffect(() => {
+       document.body.classList.add('game-active');
+       return () => {
+           document.body.classList.remove('game-active');
+       };
+    }, []); 
 
     //Carga de assets
     useEffect(() => {
@@ -133,7 +146,6 @@ function Crocodile({ gameId }) {
 
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
-        let animationFrameId;
 
         const handleKeyDown = (e) => {
             if (e.key === " " || e.key === "ArrowUp") {
@@ -142,6 +154,14 @@ function Crocodile({ gameId }) {
                 if (jumpCountRef.current < 2) {
                     cocoVelocityRef.current = jumpForce;
                     jumpCountRef.current++;
+                }
+            }
+
+            if (e.key === "Escape") {
+                isPausedRef.current = !isPausedRef.current;
+                setIsPaused(isPausedRef.current);
+                if (!isPausedRef.current) {
+                    animationFrameIdRef.current = requestAnimationFrame(draw);
                 }
             }
         };
@@ -159,6 +179,9 @@ function Crocodile({ gameId }) {
         window.addEventListener("keydown", handleKeyDown);
 
         const draw = () => {
+
+            if (isPausedRef.current) return;
+
             //Limpiar canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         
@@ -287,16 +310,18 @@ function Crocodile({ gameId }) {
             ctx.fillText(`SCORE: ${scoreRef.current}`, 20, 35);
         
             frameCountRef.current++;
-            animationFrameId = requestAnimationFrame(draw);
+            animationFrameIdRef.current = requestAnimationFrame(draw);
 
             };
+
+            drawRef.current = draw;
 
         draw();
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
             canvas.removeEventListener("touchstart", handleTouch);
-            cancelAnimationFrame(animationFrameId);
+            cancelAnimationFrame(animationFrameIdRef.current);
         };
     }, [gameState]);
 
@@ -377,7 +402,42 @@ function Crocodile({ gameId }) {
         </div>
       </div>
     )}
+    {/* Menú de pausa */}
+    {isPaused && (
+        <div className="game-overlay">
+            <h2 style={{ fontSize: "48px", color: "#FFD700" }}>⏸ PAUSA</h2>
+            <p style={{ fontSize: "18px", color: "#aaa", marginBottom: "20px" }}>
+                Puntuación actual: {scoreRef.current}
+            </p>
+            <div style={{ display: 'flex', gap: '15px' }}>
+                <button 
+                    className="start-button"
+                    onClick={() => {
+                        isPausedRef.current = false;
+                        setIsPaused(false);
+                        animationFrameIdRef.current = requestAnimationFrame(drawRef.current);
+                    }}
+                >
+                    ▶ CONTINUAR
+                </button>
+                <button 
+                    className="start-button"
+                    style={{ backgroundColor: '#57606f' }}
+                    onClick={() => navigate('/home')}
+                >
+                    🏠 SALIR
+                </button>
+            </div>
+            <p style={{ fontSize: "14px", color: "#666", marginTop: "15px" }}>
+                Pulsa ESC para continuar
+            </p>
+        </div>
+         )}
     </div>
+    
+    
+
+    
     );
 }
 

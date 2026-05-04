@@ -61,5 +61,11 @@ public class MatchController {
 	public List<MatchResponse> getTopByGame(@PathVariable Long gameId) {
 	    return matchService.getTopByGame(gameId);
 	}
+	
+	// Endpoint 6 — Mejor puntuación por juego de un usuario
+	@GetMapping("/best/{userId}")
+	public List<MatchResponse> getBestScoresByUser(@PathVariable Long userId) {
+	    return matchService.getBestScoresByUser(userId);
+	}
 
 }

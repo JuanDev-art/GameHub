@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import ProfileModal from '../ProfileModal/ProfileModal';
 import './Navbar.css'
 
 function Navbar() {
     const navigate = useNavigate();
     const username = localStorage.getItem('username');
+    const [showProfile, setShowProfile] = useState(false);
 
     const handleLogout = () => {
         localStorage.clear();
@@ -30,13 +32,20 @@ function Navbar() {
                 {username && (
                     <div className="user-info">
                         <span className="player-badge">PRO PLAYER</span>
-                        <span className="username">{username}</span>
+                        <span className="username"
+                            onClick={() => setShowProfile(true)}
+                            style={{ cursor: 'pointer' }}
+                        >{username}</span>
                     <button onClick={handleLogout} className="exit-button">
                          <i className="exit-icon">⏻</i> Exit
                     </button>
         </div>
     )}
-</div>
+</div>  
+        {/* Modal de perfil */}
+        {showProfile && (
+                <ProfileModal onClose={() => setShowProfile(false)} />
+            )}
         </nav>
     );
 }
