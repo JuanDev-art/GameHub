@@ -112,3 +112,42 @@
     color: #2ecc71;
     border-bottom: 2px solid #2ecc71;
 }
+
+@media (max-width: 768px) {
+    .navbar {
+        padding: 10px 20px;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .logo-text {
+        font-size: 1.6rem;
+    }
+
+    .logo-subtitle {
+        display: none;
+    }
+
+    .navbar-user-zone {
+        gap: 10px;
+    }
+
+    .username {
+        font-size: 0.9rem;
+    }
+
+    .player-badge {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .navbar-ranking-link {
+        font-size: 1rem;
+    }
+
+    .exit-button {
+        padding: 4px 10px;
+        font-size: 0.85rem;
+    }
+}

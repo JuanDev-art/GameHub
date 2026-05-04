@@ -315,7 +315,7 @@ function FruitBasket({ gameId }) {
 
     // Renderizado del Canvas
     return (
-        <div className="game-container" style={{ position: 'relative', width: '800px', margin: '0 auto' }}>
+        <div className="game-container" style={{ position: 'relative', margin: '0 auto' }}>
     
     {/* Pantalla de Inicio / Instrucciones */}
     {gameState === 'START' && (

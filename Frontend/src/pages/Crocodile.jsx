@@ -340,7 +340,7 @@ function Crocodile({ gameId }) {
     };
 
     return (
-        <div className="game-container" style={{ position: 'relative', width: '800px', margin: '20px auto' }}>
+        <div className="game-container" style={{ position: 'relative', margin: '0 auto' }}>
     
             {/* Pantalla de Inicio / Instrucciones */}
             {gameState === 'START' && (

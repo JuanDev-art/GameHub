@@ -227,3 +227,41 @@ body.game-active #root {
     overflow: hidden !important;
     height: 100vh;
 }
+
+.game-container canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .game-overlay {
+        overflow-y: auto;
+        justify-content: flex-start;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
+
+    .instructions {
+        font-size: 1.1rem;
+        padding: 12px;
+        margin-bottom: 12px;
+    }
+
+    .game-title-section {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        margin-top: 10px;
+    }
+
+    .start-button {
+        font-size: 1.5rem;
+        padding: 10px 20px;
+    }
+}

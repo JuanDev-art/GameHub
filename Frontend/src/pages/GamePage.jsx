@@ -20,14 +20,22 @@ function GamePage() {
     return (
     <div style={{ 
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        height: '100vh',
+        minHeight: '100vh',
         boxSizing: 'border-box',
+        padding: '10px',
+        width: '100%'
     }}>
-
-       {/* Contenedor que agrupa botón + juego */}
-        <div style={{ display: 'flex', flexDirection: 'column', width: '800px' }}>
+        <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            width: '100%',
+            maxWidth: '824px',
+            padding: '0 10px',
+            boxSizing: 'border-box'
+        }}>
             <button
                 onClick={() => navigate('/home')}
                 style={{
@@ -48,11 +56,11 @@ function GamePage() {
                 ← VOLVER AL INICIO
             </button>
 
-        {id === "1" && <FruitBasket gameId={id} />}
-        {id === "2" && <Crocodile gameId={id} />}
+            {id === "1" && <FruitBasket gameId={id} />}
+            {id === "2" && <Crocodile gameId={id} />}
+        </div>
     </div>
-</div>
-);
+    );
 }
 
 export default GamePage;
